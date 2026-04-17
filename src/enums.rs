@@ -80,3 +80,46 @@ impl Into<i32> for OMTCodec {
         self as i32
     }
 }
+
+impl OMTCodec {
+    pub fn from_wire_i32(value: i32) -> Self {
+        match value as u32 {
+            0x31584D56 => Self::VMX1,
+            0x31415046 => Self::FPA1,
+            0x59565955 => Self::UYVY,
+            0x32595559 => Self::YUY2,
+            0x41524742 => Self::BGRA,
+            0x3231564E => Self::NV12,
+            0x32315659 => Self::YV12,
+            0x41565955 => Self::UYVA,
+            0x36313250 => Self::P216,
+            0x36314150 => Self::PA16,
+            0x34363248 => Self::H264,
+            0x35363248 => Self::H265,
+            _ => Self::VMX1, // fallback
+        }
+    }
+
+    pub fn as_wire_i32(&self) -> i32 {
+        *self as i32
+    }
+}
+
+impl std::fmt::Display for OMTCodec {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::VMX1 => write!(f, "vmx1"),
+            Self::FPA1 => write!(f, "fpa1"),
+            Self::H264 => write!(f, "h264"),
+            Self::H265 => write!(f, "h265"),
+            Self::BGRA => write!(f, "bgra"),
+            Self::UYVY => write!(f, "uyvy"),
+            Self::YUY2 => write!(f, "yuy2"),
+            Self::NV12 => write!(f, "nv12"),
+            Self::YV12 => write!(f, "yv12"),
+            Self::UYVA => write!(f, "uyva"),
+            Self::P216 => write!(f, "p216"),
+            Self::PA16 => write!(f, "pa16"),
+        }
+    }
+}
