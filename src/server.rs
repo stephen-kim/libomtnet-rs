@@ -178,10 +178,9 @@ impl OMTServer {
 }
 
 fn configure_sender_socket(socket: &TcpStream) {
-    // Nagle algorithm enabled (TCP_NODELAY off) to reduce small packet count.
-    // Audio frames (~3.9KB) span multiple MSS segments, so Nagle adds < 1ms delay.
-    // Disabling NODELAY was causing excessive retransmits on Raspberry Pi.
-    let _ = socket.set_nodelay(false);
+    // OMT audio is real-time. Leaving Nagle enabled can interact with delayed ACKs
+    // and produce 40-100ms delivery gaps that receivers hear as short dropouts.
+    let _ = socket.set_nodelay(true);
 
     #[cfg(unix)]
     {
@@ -263,7 +262,7 @@ async fn handle_connection(
     conn_id: u64,
     peer_addr: String,
 ) -> Result<(), io::Error> {
-    let _ = socket.set_nodelay(false);
+    let _ = socket.set_nodelay(true);
     {
         use socket2::SockRef;
         let sock = SockRef::from(&socket);
