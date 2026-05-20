@@ -892,8 +892,6 @@ async fn update_global_suggested_quality(
                 _ => m |= 2,
             }
         }
-        if m != 0 { m |= 2; }
-
         // Compute active codec mask from conn_info
         let mut cm: u8 = 0;
         for ci in st.conn_info.values() {
